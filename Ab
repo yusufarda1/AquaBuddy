@@ -1,0 +1,3013 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>AquaBuddy - Akıllı Su Takip Sistemi</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkFxdWFCdWRkeSBQcm8iLAogICJzaG9ydF9uYW1lIjogIkFxdWFCdWRkeSIsCiAgImRlc2NyaXB0aW9uIjogIkFrxLFsbMSxIFN1IFRha2lwIFNpc3RlbWkiLAogICJzdGFydF91cmwiOiAiLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgInRoZW1lX2NvbG9yIjogIiM2NjdlZWEiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiM2NjdlZWEiLAogICJvcmllbnRhdGlvbiI6ICJwb3J0cmFpdCIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCwlM0NzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgMTAwIDEwMCclM0UlM0N0ZXh0IHk9Jy45ZW0nIGZvbnQtc2l6ZT0nOTAnJTNFJUYwJTlGJTkyJUE3JTNDJTJGdGV4dCUzRSUzQyUyRnN2ZyUzRSIsCiAgICAgICJzaXplcyI6ICIxOTJ4MTkyIiwKICAgICAgInR5cGUiOiAiaW1hZ2Uvc3ZnK3htbCIKICAgIH0sCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sLCUzQ3N2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMDAgMTAwJyUzRSUzQ3RleHQgeT0nLjllbScgZm9udC1zaXplPSc5MCclM0UlRjAlOUYlOTIlQTclM0MlMkZ0ZXh0JTNFJTNDJTJGc3ZnJTNFIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIgogICAgfQogIF0KfQ==">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AquaBuddy">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E💧%3C/text%3E%3C/svg%3E">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --water-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --success-gradient: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+            --warning-gradient: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            --dark-gradient: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --shadow-light: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            --shadow-heavy: 0 15px 35px rgba(0, 0, 0, 0.1);
+            --text-primary: #2c3e50;
+            --text-secondary: #7f8c8d;
+            --border-radius: 20px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 420px;
+            margin: 0 auto;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            position: relative;
+            box-shadow: var(--shadow-light);
+            padding-bottom: 90px;
+            padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px));
+        }
+
+        /* Giriş Ekranı - Pro Tasarım */
+        .welcome-screen {
+            padding: 60px 40px;
+            text-align: center;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-screen::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(79, 172, 254, 0.4) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(118, 75, 162, 0.4) 0%, transparent 50%);
+            z-index: 0;
+        }
+
+        .welcome-screen > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .app-logo {
+            width: 80px;
+            height: 80px;
+            background: var(--water-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-heavy);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .welcome-screen h1 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #ffffff, #e3f2fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .welcome-screen .subtitle {
+            font-size: 18px;
+            margin-bottom: 50px;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 18px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            color: white;
+            transition: var(--transition);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-start {
+            background: var(--water-gradient);
+            color: white;
+            padding: 20px 50px;
+            border: none;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-heavy);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-start:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(79, 172, 254, 0.4);
+        }
+
+        /* Ana Uygulama - Pro Header */
+        .main-app {
+            display: none;
+            background: transparent;
+        }
+
+        .header {
+            background: transparent;
+            color: white;
+            padding: 30px 25px;
+            text-align: center;
+            position: relative;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+            min-height: 60px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255,255,255,0.3);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .header-logo {
+            width: 50px;
+            height: 50px;
+            background: var(--water-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-light);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff, #e3f2fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .daily-goal {
+            font-size: 16px;
+            opacity: 0.9;
+            font-weight: 500;
+            text-align: center;
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        /* Seviye Sistemi - Pro Tasarım */
+        .level-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            margin: 20px;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            color: white;
+            text-align: center;
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--glass-border);
+        }
+
+        .level-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .level-badge {
+            text-align: left;
+        }
+
+        .level-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            background: var(--water-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .level-number {
+            font-size: 14px;
+            opacity: 0.8;
+            font-weight: 500;
+        }
+
+        .xp-info {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .xp-bar {
+            background: rgba(255, 255, 255, 0.2);
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .xp-fill {
+            height: 100%;
+            background: var(--water-gradient);
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .xp-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        /* Maskot Konteyner - Profesyonel Su Damlası */
+        .mascot-container {
+            height: 400px;
+            position: relative;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            margin: 20px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-light);
+        }
+
+        .mascot {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 120px;
+            cursor: pointer;
+            transition: var(--transition);
+            filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
+        }
+
+        .mascot:hover {
+            transform: translateX(-50%) scale(1.1);
+        }
+
+        /* Gerçek Su Damlası PNG Stili */
+        .water-droplet {
+            width: 100%;
+            height: 100%;
+            background: var(--water-gradient);
+            border-radius: 50% 50% 50% 50% / 65% 65% 35% 35%;
+            position: relative;
+            box-shadow: 
+                inset 0 0 25px rgba(255, 255, 255, 0.4),
+                inset 0 -10px 15px rgba(0, 0, 0, 0.1),
+                0 15px 35px rgba(79, 172, 254, 0.5),
+                0 5px 15px rgba(0, 0, 0, 0.2);
+            animation: dropletFloat 3s ease-in-out infinite;
+            transform-origin: center bottom;
+        }
+
+        .water-droplet::before {
+            content: '';
+            position: absolute;
+            top: 18%;
+            left: 22%;
+            width: 35%;
+            height: 45%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.2));
+            border-radius: 50%;
+            filter: blur(1px);
+            transform: rotate(-15deg);
+        }
+
+        .water-droplet::after {
+            content: '';
+            position: absolute;
+            top: 12%;
+            right: 25%;
+            width: 18%;
+            height: 25%;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            filter: blur(0.5px);
+        }
+
+        /* Maskot Yüz Ifadeleri */
+        .droplet-face {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70%;
+            height: 70%;
+            z-index: 10;
+        }
+
+        .droplet-eyes {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 18px;
+            align-items: center;
+        }
+
+        .droplet-eye {
+            width: 14px;
+            height: 16px;
+            background: #2c3e50;
+            border-radius: 50%;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .droplet-eye::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 5px;
+            height: 5px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .droplet-mouth {
+            position: absolute;
+            top: 60%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 12px;
+            border: 3px solid #2c3e50;
+            border-top: none;
+            border-radius: 0 0 24px 24px;
+            transition: all 0.3s ease;
+        }
+
+        /* Maskot durumlarına göre yüz ifadeleri */
+        .mascot-sad .droplet-eye {
+            transform: scaleY(0.6);
+        }
+
+        .mascot-sad .droplet-mouth {
+            transform: translateX(-50%) rotate(180deg);
+            border-top: 3px solid #2c3e50;
+            border-bottom: none;
+            border-radius: 24px 24px 0 0;
+        }
+
+        .mascot-happy .droplet-eye {
+            transform: scaleY(1.2);
+        }
+
+        .mascot-happy .droplet-mouth {
+            width: 28px;
+            height: 14px;
+        }
+
+        .mascot-excited .droplet-eye {
+            animation: eyeSparkle 1s ease-in-out infinite;
+        }
+
+        .mascot-excited .droplet-mouth {
+            width: 32px;
+            height: 16px;
+            animation: mouthWiggle 0.5s ease-in-out infinite;
+        }
+
+        @keyframes eyeSparkle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        @keyframes mouthWiggle {
+            0%, 100% { transform: translateX(-50%) rotate(0deg); }
+            25% { transform: translateX(-50%) rotate(2deg); }
+            75% { transform: translateX(-50%) rotate(-2deg); }
+        }
+
+        /* Maskot Durumları */
+        .mascot-angry .water-droplet { 
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            animation: shake 0.5s ease-in-out infinite;
+        }
+
+        .mascot-sad .water-droplet {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            animation: droop 2s ease-in-out infinite;
+        }
+
+        .mascot-happy .water-droplet {
+            background: var(--water-gradient);
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        .mascot-excited .water-droplet {
+            background: linear-gradient(135deg, #00cec9, #00b894);
+            animation: spin 2s ease-in-out infinite;
+        }
+
+        @keyframes dropletFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(-50%) rotate(-3deg); }
+            50% { transform: translateX(-50%) rotate(3deg); }
+        }
+
+        @keyframes droop {
+            0%, 100% { transform: translateX(-50%) translateY(0px); }
+            50% { transform: translateX(-50%) translateY(15px); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0px); }
+            50% { transform: translateX(-50%) translateY(-20px); }
+        }
+
+        @keyframes spin {
+            0% { transform: translateX(-50%) rotate(0deg); }
+            100% { transform: translateX(-50%) rotate(360deg); }
+        }
+
+        /* İstatistikler - Pro Tasarım */
+        .stats-container {
+            padding: 25px 20px;
+            background: transparent;
+        }
+
+        .progress-container {
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border-radius: 15px;
+            height: 30px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-light);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--water-gradient);
+            border-radius: 15px;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            box-shadow: var(--shadow-light);
+            transition: var(--transition);
+            border: 1px solid var(--glass-border);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 800;
+            background: var(--water-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        /* Butonlar - Pro Tasarım */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            min-height: 44px;
+        }
+
+        .btn-drink {
+            background: var(--water-gradient);
+            color: white;
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .btn-drink:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn-remind {
+            background: var(--secondary-gradient);
+            color: white;
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .btn-remind:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(240, 147, 251, 0.4);
+        }
+
+        /* Alt Menü - Pro Tasarım */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 15px 20px;
+            padding-bottom: calc(15px + env(safe-area-inset-bottom, 0px));
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.3);
+            z-index: 1000;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .nav-items {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 420px;
+            margin: 0 auto;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.7);
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 8px 12px;
+            border-radius: 12px;
+            min-width: 60px;
+            min-height: 50px;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            position: relative;
+        }
+
+        .nav-item.active {
+            color: white;
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255,255,255,0.1);
+        }
+
+        .nav-item:hover {
+            color: white;
+            transform: translateY(-1px);
+            background: rgba(255,255,255,0.1);
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-icon svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            line-height: 1;
+            text-align: center;
+        }
+
+        /* Sayfa İçerikleri */
+        .page {
+            display: none;
+            padding: 20px;
+            min-height: calc(100vh - 250px);
+            padding-bottom: 30px;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Görevler Sayfası - Pro */
+        .quest-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            margin: 0 0 20px 0;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            color: white;
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--glass-border);
+        }
+
+        .quest-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .quest-title {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .xp-badge {
+            background: var(--water-gradient);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .quest-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .quest-item {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+        }
+
+        .quest-item:hover {
+            background: rgba(255,255,255,0.15);
+            transform: translateX(5px);
+        }
+
+        .quest-item.completed {
+            background: rgba(76, 175, 80, 0.3);
+            border-left-color: #4CAF50;
+        }
+
+        .quest-item.active {
+            border-left-color: #FFC107;
+            background: rgba(255, 193, 7, 0.2);
+        }
+
+        /* İstatistikler Sayfası */
+        .stats-page-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--glass-border);
+            color: white;
+        }
+
+        .stats-overview {
+            margin-bottom: 30px;
+        }
+
+        .stat-card-large {
+            background: var(--water-gradient);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .stat-icon {
+            font-size: 48px;
+        }
+
+        .stat-number-large {
+            font-size: 48px;
+            font-weight: 800;
+            color: white;
+        }
+
+        .stat-label-large {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .stat-sublabel {
+            font-size: 14px;
+            opacity: 0.8;
+            color: white;
+        }
+
+        .stats-grid-small {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .stat-card-small {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        /* Liderlik Tablosu - Pro */
+        .leaderboard {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--glass-border);
+            color: white;
+        }
+
+        .leaderboard-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .leaderboard-title {
+            font-size: 28px;
+            font-weight: 800;
+            background: var(--water-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .leaderboard-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            margin-bottom: 15px;
+            transition: var(--transition);
+        }
+
+        .leaderboard-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-light);
+        }
+
+        .leaderboard-item.current-user {
+            background: var(--water-gradient);
+            color: white;
+        }
+
+        .leaderboard-rank {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--water-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            margin-right: 20px;
+            font-size: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .leaderboard-avatar {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .leaderboard-rank-number {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            width: 20px;
+            height: 20px;
+            background: var(--water-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 800;
+            border: 2px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .leaderboard-info {
+            flex: 1;
+        }
+
+        .leaderboard-name {
+            font-weight: 700;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+
+        .leaderboard-level {
+            font-size: 14px;
+            opacity: 0.8;
+            font-weight: 500;
+        }
+
+        .leaderboard-score {
+            font-size: 20px;
+            font-weight: 800;
+            color: #4facfe;
+        }
+
+        /* Bildirimler - Pro */
+        .notifications-page {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--glass-border);
+            color: white;
+        }
+
+        .notification-item {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            transition: var(--transition);
+        }
+
+        .notification-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .notification-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--water-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 20px;
+        }
+
+        /* Profil Sayfası - Pro */
+        .profile-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--glass-border);
+            color: white;
+        }
+
+        .profile-info {
+            margin-bottom: 40px;
+        }
+
+        .profile-avatar-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-avatar-container {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid rgba(255,255,255,0.3);
+            box-shadow: var(--shadow-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--glass-bg);
+        }
+
+        .profile-avatar-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .default-avatar {
+            font-size: 60px;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .btn-change-avatar {
+            background: var(--water-gradient);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-light);
+        }
+
+        .btn-change-avatar:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-heavy);
+        }
+
+        .profile-details {
+            display: grid;
+            gap: 20px;
+        }
+
+        .profile-field {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255,255,255,0.1);
+            padding: 15px 20px;
+            border-radius: 15px;
+            transition: var(--transition);
+        }
+
+        .profile-field:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .profile-field label {
+            min-width: 120px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .profile-input {
+            flex: 1;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 12px 15px;
+            color: white;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .profile-input:focus {
+            outline: none;
+            border-color: rgba(255,255,255,0.4);
+            background: rgba(255,255,255,0.2);
+        }
+
+        .profile-input:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-edit {
+            background: var(--secondary-gradient);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            min-width: 40px;
+        }
+
+        .btn-edit:hover {
+            transform: scale(1.1);
+        }
+
+        .btn-save-profile {
+            background: var(--success-gradient);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-heavy);
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .btn-save-profile:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(76, 175, 80, 0.4);
+        }
+
+        .profile-stats {
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 30px;
+        }
+
+        /* Ayarlar - Pro */
+        .settings-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--glass-border);
+            color: white;
+        }
+
+        .setting-group {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+        }
+
+        .setting-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            font-weight: 700;
+            color: white;
+            font-size: 18px;
+        }
+
+        /* Bildirimler */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            color: white;
+            padding: 20px 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-heavy);
+            transform: translateX(400px);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 2000;
+            max-width: 350px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        /* Başarım Popup */
+        .achievement-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            color: white;
+            padding: 40px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            box-shadow: var(--shadow-heavy);
+            z-index: 2000;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border: 1px solid var(--glass-border);
+        }
+
+        .achievement-popup.show {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .achievement-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .achievement-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        .achievement-description {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        /* Konuşma Balonu */
+        .speech-bubble {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            padding: 20px 25px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-light);
+            font-size: 16px;
+            color: white;
+            max-width: 280px;
+            text-align: center;
+            opacity: 0;
+            transition: var(--transition);
+            z-index: 10;
+            border: 1px solid var(--glass-border);
+            font-weight: 500;
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-top: 12px solid var(--glass-bg);
+        }
+
+        .speech-bubble.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(10px);
+        }
+
+        /* Su Parçacıkları */
+        .water-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--water-gradient);
+            border-radius: 50%;
+            opacity: 0;
+            animation: particleFloat 3s ease-in-out infinite;
+            box-shadow: 0 0 10px rgba(79, 172, 254, 0.5);
+        }
+
+        @keyframes particleFloat {
+            0% { opacity: 0; transform: translateY(400px) scale(0); }
+            50% { opacity: 1; transform: translateY(200px) scale(1); }
+            100% { opacity: 0; transform: translateY(0px) scale(0); }
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .container {
+                max-width: 100%;
+                border-left: none;
+                border-right: none;
+                border-radius: 0;
+            }
+            
+            .welcome-screen {
+                padding: 40px 20px;
+            }
+            
+            .header {
+                padding: 25px 15px;
+                min-height: 100px;
+            }
+            
+            .header-content {
+                min-height: 50px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .daily-goal {
+                font-size: 14px;
+            }
+            
+            .level-container, .mascot-container {
+                margin: 15px 10px;
+            }
+            
+            .stats-container {
+                padding: 20px 15px;
+            }
+            
+            .page {
+                padding: 15px 10px;
+            }
+            
+            .nav-label {
+                font-size: 9px;
+            }
+            
+            .nav-item {
+                min-width: 50px;
+                padding: 6px 8px;
+            }
+            
+            .bottom-nav {
+                padding: 12px 15px;
+                padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+            }
+        }
+
+        /* iOS Safari specific fixes */
+        @supports (-webkit-touch-callout: none) {
+            .container {
+                min-height: -webkit-fill-available;
+            }
+        }
+
+        /* Android Chrome specific fixes */
+        @media screen and (max-width: 480px) and (orientation: portrait) {
+            .welcome-screen {
+                min-height: calc(100vh - env(keyboard-inset-height, 0px));
+            }
+        }
+
+        /* Toggle Switch Stilleri */
+        .setting-toggle {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .toggle-input {
+            display: none;
+        }
+
+        .toggle-label {
+            position: relative;
+            width: 50px;
+            height: 26px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 13px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            transition: var(--transition);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .toggle-input:checked + .toggle-label {
+            background: var(--water-gradient);
+        }
+
+        .toggle-input:checked + .toggle-label .toggle-slider {
+            transform: translateX(24px);
+        }
+
+        .toggle-text {
+            color: rgba(255,255,255,0.9);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .setting-select {
+            margin-top: 15px;
+        }
+
+        /* Gizli sınıf */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Giriş Ekranı -->
+    <div class="welcome-screen" id="welcomeScreen">
+        <div class="logo-container">
+            <div class="app-logo">
+                <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Su damlası ana şekli -->
+                    <path d="M25 8C20 15 12 22 12 30C12 38.8 17.9 45 25 45C32.1 45 38 38.8 38 30C38 22 30 15 25 8Z" fill="url(#waterGradient)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                    <!-- Ana ışık yansıması -->
+                    <ellipse cx="20" cy="22" rx="4" ry="6" fill="rgba(255,255,255,0.4)" transform="rotate(-15 20 22)"/>
+                    <!-- Küçük ışık noktası -->
+                    <circle cx="30" cy="18" r="2" fill="rgba(255,255,255,0.6)"/>
+                    <!-- Alt gölge -->
+                    <ellipse cx="25" cy="40" rx="8" ry="3" fill="rgba(0,0,0,0.1)"/>
+                    <!-- Gradient tanımı -->
+                    <defs>
+                        <linearGradient id="waterGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#4facfe;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#00f2fe;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#4facfe;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <div>
+                <h1>AquaBuddy</h1>
+                <p class="subtitle">Akıllı Su Takip Sistemi</p>
+            </div>
+        </div>
+        
+        <form id="userForm">
+            <div class="form-group">
+                <label for="name">👤 Adın:</label>
+                <input type="text" id="name" required placeholder="Adını gir">
+            </div>
+            
+            <div class="form-group">
+                <label for="age">🎂 Yaşın:</label>
+                <input type="number" id="age" required min="1" max="120" placeholder="Yaşını gir">
+            </div>
+            
+            <div class="form-group">
+                <label for="weight">⚖️ Kilon (kg):</label>
+                <input type="number" id="weight" required min="20" max="300" placeholder="Kilonu gir">
+            </div>
+            
+            <div class="form-group">
+                <label for="height">📏 Boyun (cm):</label>
+                <input type="number" id="height" required min="100" max="250" placeholder="Boyunu gir">
+            </div>
+            
+            <div class="form-group">
+                <label for="gender">⚧ Cinsiyet:</label>
+                <select id="gender" required>
+                    <option value="">Seç</option>
+                    <option value="male">Erkek</option>
+                    <option value="female">Kadın</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="activity">🏃 Aktivite Seviyesi:</label>
+                <select id="activity" required>
+                    <option value="">Seç</option>
+                    <option value="low">Düşük (Masa başı iş)</option>
+                    <option value="moderate">Orta (Hafif egzersiz)</option>
+                    <option value="high">Yüksek (Düzenli spor)</option>
+                    <option value="very-high">Çok Yüksek (Yoğun antrenman)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="avatar">📸 Profil Fotoğrafı (İsteğe bağlı):</label>
+                <input type="file" id="avatar" accept="image/*" style="padding: 15px;">
+                <div id="avatarPreview" style="margin-top: 15px; text-align: center;"></div>
+            </div>
+            
+            <button type="submit" class="btn-start">🚀 Başlayalım!</button>
+        </form>
+    </div>
+
+    <!-- Ana Uygulama -->
+    <div class="container main-app" id="mainApp">
+        <div class="header">
+            <div class="header-content">
+                <div id="userAvatarContainer"></div>
+                <div class="header-logo">
+                    <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Su damlası ana şekli -->
+                        <path d="M15 5C12 9 7 13 7 18C7 23.3 10.7 27 15 27C19.3 27 23 23.3 23 18C23 13 18 9 15 5Z" fill="white" opacity="0.9"/>
+                        <!-- Ana ışık yansıması -->
+                        <ellipse cx="12" cy="13" rx="2.5" ry="3.5" fill="rgba(255,255,255,0.6)" transform="rotate(-15 12 13)"/>
+                        <!-- Küçük ışık noktası -->
+                        <circle cx="18" cy="11" r="1.2" fill="rgba(255,255,255,0.8)"/>
+                    </svg>
+                </div>
+                <h1>AquaBuddy</h1>
+            </div>
+            <div class="daily-goal" id="dailyGoal">Günlük hedef: 8 bardak</div>
+        </div>
+
+        <!-- Ana Menü Sayfası -->
+        <div class="page active" id="homePage">
+            <!-- Seviye Sistemi -->
+            <div class="level-container">
+                <div class="level-info">
+                    <div class="level-badge">
+                        <div class="level-name" id="levelName">Çöl Gezgini</div>
+                        <div class="level-number">Seviye <span id="playerLevel">1</span></div>
+                    </div>
+                    <div class="xp-info">
+                        <div><span id="currentXP">0</span>/<span id="maxXP">100</span> XP</div>
+                    </div>
+                </div>
+                <div class="xp-bar">
+                    <div class="xp-fill" id="xpFill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="mascot-container" id="landscape">
+                <div class="speech-bubble" id="speechBubble">Merhaba! Su içme zamanı! 💧</div>
+                <div class="water-particles" id="waterParticles"></div>
+                <div class="mascot" id="mascot" onclick="talkToMascot()">
+                    <div class="water-droplet">
+                        <div class="droplet-face">
+                            <div class="droplet-eyes">
+                                <div class="droplet-eye"></div>
+                                <div class="droplet-eye"></div>
+                            </div>
+                            <div class="droplet-mouth"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-container">
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%">0/8</div>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="dailyGlasses">0</div>
+                        <div class="stat-label">Bugün İçilen</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalGlasses">0</div>
+                        <div class="stat-label">Toplam Bardak</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="streakDays">0</div>
+                        <div class="stat-label">Gün Serisi</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="hydrationLevel">0</div>
+                        <div class="stat-label">Hidrasyon %</div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-drink" id="drinkButton" onclick="drinkWater()">💧 Su İçtim</button>
+                    <button class="btn btn-remind" onclick="setReminder()">🔔 Hatırlat</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Görevler Sayfası -->
+        <div class="page" id="questsPage">
+            <div class="quest-container">
+                <div class="quest-header">
+                    <div class="quest-title">🎯 Günlük Görevler</div>
+                    <div class="xp-badge">+XP Kazan</div>
+                </div>
+                <div class="quest-list" id="questList">
+                    <!-- Görevler dinamik olarak eklenecek -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Profil Sayfası -->
+        <div class="page" id="profilePage">
+            <div class="profile-container">
+                <h2 style="text-align: center; margin-bottom: 30px; color: white; font-size: 28px; font-weight: 700;">👤 Profilim</h2>
+                
+                <!-- Profil Bilgileri -->
+                <div class="profile-info">
+                    <div class="profile-avatar-section">
+                        <div class="profile-avatar-container" id="profileAvatarContainer">
+                            <div class="default-avatar">👤</div>
+                        </div>
+                        <button class="btn-change-avatar" onclick="changeAvatar()">📸 Fotoğraf Değiştir</button>
+                        <input type="file" id="newAvatar" accept="image/*" style="display: none;">
+                    </div>
+                    
+                    <div class="profile-details">
+                        <div class="profile-field">
+                            <label>👤 İsim:</label>
+                            <input type="text" id="profileName" class="profile-input">
+                            <button class="btn-edit" onclick="editField('name')">✏️</button>
+                        </div>
+                        
+                        <div class="profile-field">
+                            <label>🎂 Yaş:</label>
+                            <input type="number" id="profileAge" class="profile-input" min="1" max="120">
+                            <button class="btn-edit" onclick="editField('age')">✏️</button>
+                        </div>
+                        
+                        <div class="profile-field">
+                            <label>📏 Boy (cm):</label>
+                            <input type="number" id="profileHeight" class="profile-input" min="100" max="250">
+                            <button class="btn-edit" onclick="editField('height')">✏️</button>
+                        </div>
+                        
+                        <div class="profile-field">
+                            <label>⚖️ Kilo (kg):</label>
+                            <input type="number" id="profileWeight" class="profile-input" min="20" max="300">
+                            <button class="btn-edit" onclick="editField('weight')">✏️</button>
+                        </div>
+                        
+                        <div class="profile-field">
+                            <label>⚧ Cinsiyet:</label>
+                            <select id="profileGender" class="profile-input">
+                                <option value="male">Erkek</option>
+                                <option value="female">Kadın</option>
+                            </select>
+                            <button class="btn-edit" onclick="editField('gender')">✏️</button>
+                        </div>
+                        
+                        <div class="profile-field">
+                            <label>🏃 Aktivite:</label>
+                            <select id="profileActivity" class="profile-input">
+                                <option value="low">Düşük</option>
+                                <option value="moderate">Orta</option>
+                                <option value="high">Yüksek</option>
+                                <option value="very-high">Çok Yüksek</option>
+                            </select>
+                            <button class="btn-edit" onclick="editField('activity')">✏️</button>
+                        </div>
+                        
+                        <button class="btn-save-profile" onclick="saveProfile()">💾 Profili Kaydet</button>
+                    </div>
+                </div>
+                
+                <!-- İstatistikler -->
+                <div class="profile-stats">
+                    <h3 style="color: white; margin-bottom: 20px; text-align: center;">📊 İstatistiklerim</h3>
+                    
+                    <div class="stat-card-large">
+                        <div class="stat-icon">💧</div>
+                        <div class="stat-info">
+                            <div class="stat-number-large" id="totalGlassesLarge">0</div>
+                            <div class="stat-label-large">Toplam Su İçimi</div>
+                            <div class="stat-sublabel">Tüm zamanlar</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-grid-small">
+                        <div class="stat-card-small">
+                            <div class="stat-number" id="avgDaily">0</div>
+                            <div class="stat-label">Günlük Ortalama</div>
+                        </div>
+                        <div class="stat-card-small">
+                            <div class="stat-number" id="bestStreak">0</div>
+                            <div class="stat-label">En İyi Seri</div>
+                        </div>
+                        <div class="stat-card-small">
+                            <div class="stat-number" id="totalDays">0</div>
+                            <div class="stat-label">Aktif Gün</div>
+                        </div>
+                        <div class="stat-card-small">
+                            <div class="stat-number" id="completedGoals">0</div>
+                            <div class="stat-label">Tamamlanan Hedef</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Liderlik Tablosu Sayfası -->
+        <div class="page" id="leaderboardPage">
+            <div class="leaderboard">
+                <div class="leaderboard-header">
+                    <div class="leaderboard-title">🏆 Liderlik Tablosu</div>
+                    <div class="leaderboard-subtitle">En başarılı su içiciler</div>
+                </div>
+                <div class="leaderboard-list" id="leaderboardList">
+                    <!-- Liderlik tablosu dinamik olarak eklenecek -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Ayarlar Sayfası -->
+        <div class="page" id="settingsPage">
+            <div class="settings-container">
+                <h2 style="text-align: center; margin-bottom: 30px; color: white; font-size: 28px; font-weight: 700;">⚙️ Ayarlar</h2>
+                
+
+
+                <!-- Ses Ayarları -->
+                <div class="setting-group">
+                    <div class="setting-header">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                        </svg>
+                        <span>Ses Efektleri</span>
+                    </div>
+                    <div class="setting-toggle">
+                        <input type="checkbox" id="soundEffectsToggle" class="toggle-input" checked>
+                        <label for="soundEffectsToggle" class="toggle-label">
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span class="toggle-text">Ses efektlerini aç/kapat</span>
+                    </div>
+                </div>
+
+                <!-- Dil Ayarları -->
+                <div class="setting-group">
+                    <div class="setting-header">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/>
+                        </svg>
+                        <span>Dil / Language</span>
+                    </div>
+                    <select id="languageSelect" class="setting-select" style="width: 100%; padding: 12px 15px; border: 2px solid rgba(255,255,255,0.2); border-radius: 10px; font-size: 14px; background: rgba(255,255,255,0.1); color: white; cursor: pointer;">
+                        <option value="tr">🇹🇷 Türkçe</option>
+                        <option value="en">🇺🇸 English</option>
+                        <option value="de">🇩🇪 Deutsch</option>
+                        <option value="fr">🇫🇷 Français</option>
+                        <option value="es">🇪🇸 Español</option>
+                        <option value="it">🇮🇹 Italiano</option>
+                    </select>
+                </div>
+
+                <!-- Bildirim Ayarları -->
+                <div class="setting-group">
+                    <div class="setting-header">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                        </svg>
+                        <span>Hatırlatma Sıklığı</span>
+                    </div>
+                    <select id="reminderFrequency" class="setting-select" style="width: 100%; padding: 12px 15px; border: 2px solid rgba(255,255,255,0.2); border-radius: 10px; font-size: 14px; background: rgba(255,255,255,0.1); color: white; cursor: pointer;">
+                        <option value="30">30 dakika</option>
+                        <option value="60">1 saat</option>
+                        <option value="120" selected>2 saat</option>
+                        <option value="180">3 saat</option>
+                        <option value="240">4 saat</option>
+                        <option value="0">Kapalı</option>
+                    </select>
+                </div>
+
+
+            </div>
+        </div>
+
+        <!-- Alt Menü -->
+        <div class="bottom-nav">
+            <div class="nav-items">
+                <div class="nav-item active" onclick="showPage('homePage', this)">
+                    <div class="nav-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                        </svg>
+                    </div>
+                    <div class="nav-label">Ana Sayfa</div>
+                </div>
+                <div class="nav-item" onclick="showPage('questsPage', this)">
+                    <div class="nav-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
+                    <div class="nav-label">Görevler</div>
+                </div>
+                <div class="nav-item" onclick="showPage('leaderboardPage', this)">
+                    <div class="nav-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M7 14H5v5h2v-5zm3-7H8v12h2V7zm3 3h-2v9h2v-9zm3-6h-2v15h2V4z"/>
+                        </svg>
+                    </div>
+                    <div class="nav-label">Sıralama</div>
+                </div>
+                <div class="nav-item" onclick="showPage('profilePage', this)">
+                    <div class="nav-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                        </svg>
+                    </div>
+                    <div class="nav-label">Profil</div>
+                </div>
+                <div class="nav-item" onclick="showPage('settingsPage', this)">
+                    <div class="nav-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.82,11.69,4.82,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+                        </svg>
+                    </div>
+                    <div class="nav-label">Ayarlar</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bildirimler -->
+    <div class="notification" id="notification">Su içme zamanı! 💧</div>
+    
+    <!-- Başarım Popup -->
+    <div class="achievement-popup" id="achievementPopup">
+        <div class="achievement-icon" id="achievementIcon">🏆</div>
+        <div class="achievement-title" id="achievementTitle">Başarım Kazandın!</div>
+        <div class="achievement-description" id="achievementDescription">Harika iş çıkardın!</div>
+    </div>
+
+    <script>
+        // Ses efektleri ve müzik (Web Audio API ile)
+        let audioContext;
+        let soundEnabled = true;
+
+        // Ses efektlerini başlat
+        function initAudio() {
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            } catch (e) {
+                console.log('Web Audio API desteklenmiyor');
+            }
+        }
+
+        // Gerçekçi su damlama sesi
+        function playDropSound() {
+            if (!soundEnabled || !audioContext) return;
+            
+            // Su damlama sesi - daha gerçekçi
+            const oscillator1 = audioContext.createOscillator();
+            const oscillator2 = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            const filter = audioContext.createBiquadFilter();
+            
+            // İki osilatör karışımı
+            oscillator1.connect(filter);
+            oscillator2.connect(filter);
+            filter.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            // Frekanslar
+            oscillator1.frequency.setValueAtTime(1200, audioContext.currentTime);
+            oscillator1.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
+            oscillator1.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.3);
+            
+            oscillator2.frequency.setValueAtTime(800, audioContext.currentTime);
+            oscillator2.frequency.exponentialRampToValueAtTime(300, audioContext.currentTime + 0.15);
+            oscillator2.frequency.exponentialRampToValueAtTime(150, audioContext.currentTime + 0.4);
+            
+            // Dalga şekilleri
+            oscillator1.type = 'sine';
+            oscillator2.type = 'triangle';
+            
+            // Filtre
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(2000, audioContext.currentTime);
+            filter.frequency.exponentialRampToValueAtTime(500, audioContext.currentTime + 0.4);
+            filter.Q.setValueAtTime(1, audioContext.currentTime);
+            
+            // Ses seviyesi
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.1, audioContext.currentTime + 0.1);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+            
+            oscillator1.start(audioContext.currentTime);
+            oscillator2.start(audioContext.currentTime);
+            oscillator1.stop(audioContext.currentTime + 0.4);
+            oscillator2.stop(audioContext.currentTime + 0.4);
+        }
+
+        // Su doldurma sesi - daha gerçekçi
+        function playFillSound() {
+            if (!soundEnabled || !audioContext) return;
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            const filter = audioContext.createBiquadFilter();
+            const noiseBuffer = audioContext.createBuffer(1, audioContext.sampleRate * 0.8, audioContext.sampleRate);
+            const noiseSource = audioContext.createBufferSource();
+            const noiseGain = audioContext.createGain();
+            
+            // Gürültü oluştur (su sesi için)
+            const output = noiseBuffer.getChannelData(0);
+            for (let i = 0; i < noiseBuffer.length; i++) {
+                output[i] = Math.random() * 2 - 1;
+            }
+            
+            noiseSource.buffer = noiseBuffer;
+            noiseSource.connect(noiseGain);
+            noiseGain.connect(audioContext.destination);
+            
+            oscillator.connect(filter);
+            filter.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.type = 'sawtooth';
+            oscillator.frequency.setValueAtTime(120, audioContext.currentTime);
+            oscillator.frequency.linearRampToValueAtTime(180, audioContext.currentTime + 0.4);
+            oscillator.frequency.linearRampToValueAtTime(150, audioContext.currentTime + 0.8);
+            
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(800, audioContext.currentTime);
+            filter.frequency.linearRampToValueAtTime(1200, audioContext.currentTime + 0.4);
+            filter.frequency.linearRampToValueAtTime(600, audioContext.currentTime + 0.8);
+            
+            gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.25, audioContext.currentTime + 0.4);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.8);
+            
+            noiseGain.gain.setValueAtTime(0.05, audioContext.currentTime);
+            noiseGain.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 0.4);
+            noiseGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.8);
+            
+            oscillator.start(audioContext.currentTime);
+            noiseSource.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.8);
+            noiseSource.stop(audioContext.currentTime + 0.8);
+        }
+
+        // Başarım sesi
+        function playAchievementSound() {
+            if (!soundEnabled || !audioContext) return;
+            
+            const notes = [523.25, 659.25, 783.99, 1046.50]; // C, E, G, C
+            
+            notes.forEach((freq, index) => {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(freq, audioContext.currentTime + index * 0.15);
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime + index * 0.15);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + index * 0.15 + 0.3);
+                
+                oscillator.start(audioContext.currentTime + index * 0.15);
+                oscillator.stop(audioContext.currentTime + index * 0.15 + 0.3);
+            });
+        }
+
+        // Gelişmiş seviye isimleri - çölden suya doğru
+        const levelNames = [
+            { level: 1, name: "Çöl Gezgini", description: "Susuzluğun başlangıcı" },
+            { level: 2, name: "Kum Avcısı", description: "İlk adımlar" },
+            { level: 3, name: "Vaha Arayıcısı", description: "Umut ışığı" },
+            { level: 4, name: "Su Keşifçisi", description: "Yolculuk başlıyor" },
+            { level: 5, name: "Damla Toplayıcısı", description: "Her damla değerli" },
+            { level: 6, name: "Pınar Bulucusu", description: "Taze su kaynakları" },
+            { level: 7, name: "Akarsu Takipçisi", description: "Akan sular" },
+            { level: 8, name: "Göl Koruyucusu", description: "Sakin sular" },
+            { level: 9, name: "Nehir Ustası", description: "Güçlü akış" },
+            { level: 10, name: "Şelale Savaşçısı", description: "Coşkulu sular" },
+            { level: 11, name: "Okyanus Çırağı", description: "Sonsuz mavi" },
+            { level: 12, name: "Dalga Dansçısı", description: "Ritimli hareket" },
+            { level: 13, name: "Gelgit Ustası", description: "Doğal döngü" },
+            { level: 14, name: "Fırtına Yatıştırıcısı", description: "Sakinlik getiren" },
+            { level: 15, name: "Su Büyücüsü", description: "Sihirli güçler" },
+            { level: 16, name: "Hidro Sihirbazı", description: "Elementel kontrol" },
+            { level: 17, name: "Aqua Efendisi", description: "Su hakimiyeti" },
+            { level: 18, name: "Kristal Su Lordü", description: "Berrak güç" },
+            { level: 19, name: "Okyanus Kralı", description: "Denizlerin efendisi" },
+            { level: 20, name: "Su Tanrısı", description: "Efsanevi güç" },
+            { level: 25, name: "Evrensel Akış", description: "Kozmik su enerjisi" },
+            { level: 30, name: "Sonsuz Kaynak", description: "Tükenmez güç" },
+            { level: 40, name: "Su Avatarı", description: "Mükemmel denge" },
+            { level: 50, name: "Hidrasyon Efsanesi", description: "Efsanevi varlık" }
+        ];
+
+        // Kullanıcı verileri ve oyun durumu
+        let userData = {};
+        let gameState = {
+            dailyGlasses: 0,
+            totalGlasses: parseInt(localStorage.getItem('totalGlasses')) || 0,
+            streakDays: parseInt(localStorage.getItem('streakDays')) || 0,
+            dailyGoal: 8,
+            lastDrinkTime: null,
+            lastDrinkDate: localStorage.getItem('lastDrinkDate') || null,
+            reminderInterval: null,
+            // Seviye sistemi
+            playerLevel: parseInt(localStorage.getItem('playerLevel')) || 1,
+            currentXP: parseInt(localStorage.getItem('currentXP')) || 0,
+            maxXP: 100,
+            // Görevler
+            completedQuests: JSON.parse(localStorage.getItem('completedQuests')) || [],
+            // Bildirimler
+            notifications: JSON.parse(localStorage.getItem('notifications')) || []
+        };
+
+        // Görev tanımları
+        const quests = [
+            {
+                id: 'first_glass',
+                name: 'İlk Yudum',
+                description: 'İlk bardak suyu iç',
+                target: 1,
+                reward: 50,
+                icon: '💧'
+            },
+            {
+                id: 'morning_hydration',
+                name: 'Sabah Hidrasyonu',
+                description: 'Sabah 3 bardak su iç',
+                target: 3,
+                reward: 75,
+                icon: '🌅'
+            },
+            {
+                id: 'daily_goal',
+                name: 'Günlük Hedef',
+                description: 'Günlük hedefini tamamla',
+                target: 'daily_goal',
+                reward: 100,
+                icon: '🎯'
+            },
+            {
+                id: 'streak_3',
+                name: 'Kararlılık',
+                description: '3 gün üst üste hedefi tamamla',
+                target: 3,
+                reward: 150,
+                icon: '🔥'
+            },
+            {
+                id: 'total_50',
+                name: 'Su Ustası',
+                description: 'Toplam 50 bardak su iç',
+                target: 50,
+                reward: 200,
+                icon: '🏆'
+            }
+        ];
+
+        // Su damlası karakteri durumları
+        const mascotStates = {
+            desert: { 
+                class: 'mascot-angry', 
+                message: 'Çok susadım! Su ver bana! 🏜️',
+            },
+            thirsty: { 
+                class: 'mascot-sad', 
+                message: 'Biraz su içsek nasıl olur? 😔',
+            },
+            normal: { 
+                class: '', 
+                message: 'İyi gidiyoruz! Devam edelim! 😊',
+            },
+            happy: { 
+                class: 'mascot-happy', 
+                message: 'Harika! Kendimi çok iyi hissediyorum! 😄',
+            },
+            excited: { 
+                class: 'mascot-excited', 
+                message: 'Mükemmel! Su kralısın! 🎉',
+            }
+        };
+
+        // Dinamik liderlik tablosu
+        let totalUsers = parseInt(localStorage.getItem('totalUsers')) || 1;
+        
+        function generateLeaderboardData() {
+            const data = [];
+            const names = ['Su Ustası', 'Hidrasyon Kahramanı', 'Damla Avcısı', 'Aqua Savaşçısı', 'Su Büyücüsü'];
+            
+            for (let i = 1; i <= Math.min(totalUsers - 1, 999); i++) {
+                const randomGlasses = Math.floor(Math.random() * 3000) + 500;
+                const randomLevel = Math.floor(randomGlasses / 200) + 1;
+                const randomStreak = Math.floor(Math.random() * 50) + 1;
+                const levelInfo = getLevelName(randomLevel);
+                
+                data.push({
+                    name: `${names[Math.floor(Math.random() * names.length)]} ${i}`,
+                    totalGlasses: randomGlasses,
+                    level: randomLevel,
+                    levelName: levelInfo.name,
+                    streak: randomStreak
+                });
+            }
+            
+            return data.sort((a, b) => b.totalGlasses - a.totalGlasses);
+        }
+
+        // Sayfa yüklendiğinde
+        window.onload = function() {
+            initAudio();
+            
+            const savedUserData = localStorage.getItem('userData');
+            if (savedUserData) {
+                userData = JSON.parse(savedUserData);
+                showMainApp();
+            }
+            setupSettings();
+        };
+
+        // Avatar yükleme
+        document.getElementById('avatar').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const avatarPreview = document.getElementById('avatarPreview');
+                    avatarPreview.innerHTML = `
+                        <img src="${e.target.result}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid rgba(255,255,255,0.3); box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
+                        <div style="margin-top: 10px; font-size: 14px; color: rgba(255,255,255,0.8);">Profil fotoğrafın hazır!</div>
+                    `;
+                    userData.avatar = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Form gönderimi
+        document.getElementById('userForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            userData = {
+                name: document.getElementById('name').value,
+                age: parseInt(document.getElementById('age').value),
+                weight: parseInt(document.getElementById('weight').value),
+                height: parseInt(document.getElementById('height').value),
+                gender: document.getElementById('gender').value,
+                activity: document.getElementById('activity').value,
+                avatar: userData.avatar || null
+            };
+            
+            // Günlük su ihtiyacını hesapla
+            gameState.dailyGoal = calculateDailyWaterNeed();
+            
+            // Verileri kaydet
+            localStorage.setItem('userData', JSON.stringify(userData));
+            
+            showMainApp();
+        });
+
+        // Günlük su ihtiyacını hesapla
+        function calculateDailyWaterNeed() {
+            let baseWater = userData.weight * 35; // ml
+            
+            // Yaş faktörü
+            if (userData.age > 65) baseWater *= 0.9;
+            if (userData.age < 18) baseWater *= 1.1;
+            
+            // Cinsiyet faktörü
+            if (userData.gender === 'male') baseWater *= 1.1;
+            
+            // Aktivite faktörü
+            const activityMultipliers = {
+                'low': 1,
+                'moderate': 1.2,
+                'high': 1.4,
+                'very-high': 1.6
+            };
+            baseWater *= activityMultipliers[userData.activity] || 1;
+            
+            // Bardak sayısına çevir (250ml = 1 bardak)
+            return Math.ceil(baseWater / 250);
+        }
+
+        // Ana uygulamayı göster
+        function showMainApp() {
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            document.getElementById('mainApp').style.display = 'block';
+            
+            document.getElementById('dailyGoal').textContent = 
+                `Günlük hedef: ${gameState.dailyGoal} bardak`;
+            
+            // Avatar göster
+            const avatarContainer = document.getElementById('userAvatarContainer');
+            if (userData.avatar) {
+                avatarContainer.innerHTML = `<img src="${userData.avatar}" class="user-avatar" alt="Profil Fotoğrafı">`;
+            }
+            
+            checkDailyReset();
+            updateDisplay();
+            updateMascot();
+            updateQuests();
+            updateLeaderboard();
+            updateStats();
+            
+            // Hoş geldin mesajı
+            setTimeout(() => {
+                showSpeechBubble(`Merhaba ${userData.name}! Günde ${gameState.dailyGoal} bardak su içmen gerekiyor! 💧`);
+            }, 1000);
+        }
+
+        // Sayfa gösterme
+        function showPage(pageId, navItem) {
+            // Tüm sayfaları gizle
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Tüm nav itemlardan active sınıfını kaldır
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Seçilen sayfayı göster
+            document.getElementById(pageId).classList.add('active');
+            navItem.classList.add('active');
+            
+            // Sayfa değiştiğinde ses efekti
+            playDropSound();
+            
+            // Profil sayfası açıldığında profili yükle
+            if (pageId === 'profilePage') {
+                loadProfile();
+                updateStats();
+            }
+        }
+
+        // Günlük sıfırlama kontrolü
+        function checkDailyReset() {
+            const today = new Date().toDateString();
+            const lastDate = localStorage.getItem('lastDrinkDate');
+            
+            if (lastDate !== today) {
+                gameState.dailyGlasses = 0;
+                gameState.completedQuests = gameState.completedQuests.filter(q => !q.startsWith('daily_'));
+                if (lastDate && new Date(lastDate).getTime() < new Date(today).getTime() - 86400000) {
+                    gameState.streakDays = 0;
+                }
+            }
+        }
+
+        // Su içme fonksiyonu
+        function drinkWater() {
+            // Günlük limit kontrolü
+            if (gameState.dailyGlasses >= gameState.dailyGoal) {
+                showNotification("⚠️ Günlük hedefini zaten tamamladın! Yarın tekrar dene.", "warning");
+                showSpeechBubble("Bugün yeterince su içtin! Yarın görüşürüz! 😊");
+                return;
+            }
+            
+            // Ses efekti
+            playFillSound();
+            
+            gameState.dailyGlasses++;
+            gameState.totalGlasses++;
+            gameState.lastDrinkTime = new Date();
+            
+            const today = new Date().toDateString();
+            const lastDate = localStorage.getItem('lastDrinkDate');
+            
+            if (lastDate !== today) {
+                if (lastDate && new Date(today).getTime() - new Date(lastDate).getTime() <= 86400000) {
+                    gameState.streakDays++;
+                } else {
+                    gameState.streakDays = 1;
+                }
+                localStorage.setItem('lastDrinkDate', today);
+            }
+
+            // Görev kontrolü
+            checkQuests();
+            
+            // Görsel efektler
+            createWaterParticles();
+            updateDisplay();
+            updateMascot();
+            updateStats();
+            
+            // Verileri kaydet
+            saveGameState();
+            
+            // Bildirim ekle
+            addNotification('💧', 'Su İçtin!', `${gameState.dailyGlasses}/${gameState.dailyGoal} bardak tamamlandı`);
+            
+            // Tebrik mesajları
+            const progress = (gameState.dailyGlasses / gameState.dailyGoal) * 100;
+            if (progress >= 100) {
+                showNotification("🎉 Günlük hedefini tamamladın! Harikasın!", "success");
+                showSpeechBubble("Mükemmel! Günlük hedefini tamamladın! 🎉");
+                addNotification('🎉', 'Hedef Tamamlandı!', 'Günlük su hedefini başarıyla tamamladın!');
+            } else if (gameState.dailyGlasses % 2 === 0) {
+                showNotification("💧 Harika! Devam et!", "success");
+            }
+        }
+
+        // Bildirim ekle
+        function addNotification(icon, title, text) {
+            const notification = {
+                id: Date.now(),
+                icon: icon,
+                title: title,
+                text: text,
+                time: new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }),
+                date: new Date().toLocaleDateString('tr-TR')
+            };
+            
+            gameState.notifications.unshift(notification);
+            
+            // En fazla 50 bildirim tut
+            if (gameState.notifications.length > 50) {
+                gameState.notifications = gameState.notifications.slice(0, 50);
+            }
+            
+            localStorage.setItem('notifications', JSON.stringify(gameState.notifications));
+            updateNotifications();
+        }
+
+
+
+        // Liderlik tablosunu güncelle
+        function updateLeaderboard() {
+            const leaderboardList = document.getElementById('leaderboardList');
+            
+            // Her su içildiğinde kullanıcı sayısını artır
+            if (Math.random() < 0.3) { // %30 şansla yeni kullanıcı ekle
+                totalUsers++;
+                localStorage.setItem('totalUsers', totalUsers);
+            }
+            
+            // Kullanıcıyı listeye ekle
+            const userLevelInfo = getLevelName(gameState.playerLevel);
+            const userEntry = {
+                name: userData.name || 'Sen',
+                totalGlasses: gameState.totalGlasses,
+                level: gameState.playerLevel,
+                levelName: userLevelInfo.name,
+                streak: gameState.streakDays,
+                isCurrentUser: true
+            };
+            
+            // Dinamik veri oluştur ve kullanıcıyı ekle
+            const leaderboardData = generateLeaderboardData();
+            const allData = [...leaderboardData, userEntry].sort((a, b) => b.totalGlasses - a.totalGlasses);
+            
+            // İlk 100 kişiyi al
+            const topUsers = allData.slice(0, Math.min(100, allData.length));
+            
+            leaderboardList.innerHTML = topUsers.map((user, index) => {
+                const rank = index + 1;
+                let rankStyle = 'background: var(--water-gradient);';
+                
+                if (rank === 1) rankStyle = 'background: linear-gradient(135deg, #FFD700, #FFA500);';
+                else if (rank === 2) rankStyle = 'background: linear-gradient(135deg, #C0C0C0, #A8A8A8);';
+                else if (rank === 3) rankStyle = 'background: linear-gradient(135deg, #CD7F32, #B8860B);';
+                
+                // Avatar kontrolü
+                let avatarContent = '';
+                if (user.isCurrentUser && userData.avatar) {
+                    avatarContent = `<img src="${userData.avatar}" class="leaderboard-avatar" alt="Avatar">`;
+                } else if (!user.isCurrentUser) {
+                    // Diğer kullanıcılar için rastgele avatar
+                    const avatars = ['👤', '🧑', '👩', '🧔', '👨', '👱', '🧑‍💼', '👩‍💼'];
+                    const randomAvatar = avatars[Math.floor(Math.random() * avatars.length)];
+                    avatarContent = `<div style="font-size: 24px;">${randomAvatar}</div>`;
+                } else {
+                    avatarContent = `<div style="font-size: 24px;">👤</div>`;
+                }
+                
+                return `
+                    <div class="leaderboard-item ${user.isCurrentUser ? 'current-user' : ''}">
+                        <div class="leaderboard-rank" style="${rankStyle}">
+                            ${avatarContent}
+                            <div class="leaderboard-rank-number">${rank}</div>
+                        </div>
+                        <div class="leaderboard-info">
+                            <div class="leaderboard-name">${user.name}</div>
+                            <div class="leaderboard-level">${user.levelName} (Seviye ${user.level}) • ${user.streak} gün serisi</div>
+                        </div>
+                        <div class="leaderboard-score">${user.totalGlasses}</div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Toplam kullanıcı sayısını göster
+            const subtitle = document.querySelector('.leaderboard-subtitle');
+            if (subtitle) {
+                subtitle.textContent = `Toplam ${totalUsers} kullanıcı arasından en başarılılar`;
+            }
+        }
+
+        // İstatistikleri güncelle
+        function updateStats() {
+            const totalGlassesLarge = document.getElementById('totalGlassesLarge');
+            const avgDaily = document.getElementById('avgDaily');
+            const bestStreak = document.getElementById('bestStreak');
+            const totalDays = document.getElementById('totalDays');
+            const completedGoals = document.getElementById('completedGoals');
+            
+            if (totalGlassesLarge) totalGlassesLarge.textContent = gameState.totalGlasses;
+            if (avgDaily) avgDaily.textContent = Math.round(gameState.totalGlasses / Math.max(1, gameState.streakDays));
+            if (bestStreak) bestStreak.textContent = gameState.streakDays;
+            if (totalDays) totalDays.textContent = gameState.streakDays;
+            if (completedGoals) completedGoals.textContent = Math.floor(gameState.totalGlasses / gameState.dailyGoal);
+        }
+
+        // Görevleri kontrol et
+        function checkQuests() {
+            quests.forEach(quest => {
+                if (gameState.completedQuests.includes(quest.id)) return;
+                
+                let completed = false;
+                
+                switch (quest.id) {
+                    case 'first_glass':
+                        completed = gameState.dailyGlasses >= 1;
+                        break;
+                    case 'morning_hydration':
+                        completed = gameState.dailyGlasses >= 3;
+                        break;
+                    case 'daily_goal':
+                        completed = gameState.dailyGlasses >= gameState.dailyGoal;
+                        break;
+                    case 'streak_3':
+                        completed = gameState.streakDays >= 3;
+                        break;
+                    case 'total_50':
+                        completed = gameState.totalGlasses >= 50;
+                        break;
+                }
+                
+                if (completed) {
+                    completeQuest(quest);
+                }
+            });
+        }
+
+        // Görevi tamamla
+        function completeQuest(quest) {
+            gameState.completedQuests.push(quest.id);
+            gameState.currentXP += quest.reward;
+            
+            // Seviye atlama kontrolü
+            checkLevelUp();
+            
+            // Başarım göster
+            showAchievement(quest.icon, quest.name, `+${quest.reward} XP kazandın!`);
+            
+            // Ses efekti
+            playAchievementSound();
+            
+            // Bildirim ekle
+            addNotification(quest.icon, 'Görev Tamamlandı!', `${quest.name} - +${quest.reward} XP`);
+            
+            updateQuests();
+            updateDisplay();
+        }
+
+        // Seviye ismini al
+        function getLevelName(level) {
+            for (let i = levelNames.length - 1; i >= 0; i--) {
+                if (level >= levelNames[i].level) {
+                    return levelNames[i];
+                }
+            }
+            return levelNames[0];
+        }
+
+        // Seviye atlama kontrolü
+        function checkLevelUp() {
+            while (gameState.currentXP >= gameState.maxXP) {
+                gameState.currentXP -= gameState.maxXP;
+                gameState.playerLevel++;
+                gameState.maxXP = Math.floor(gameState.maxXP * 1.2);
+                
+                const levelInfo = getLevelName(gameState.playerLevel);
+                showAchievement('🎊', `${levelInfo.name}!`, `Seviye ${gameState.playerLevel} - ${levelInfo.description}`);
+                playAchievementSound();
+                
+                addNotification('🎊', 'Seviye Atladın!', `${levelInfo.name} oldun! (Seviye ${gameState.playerLevel})`);
+                
+                // Liderlik tablosunu güncelle
+                updateLeaderboard();
+            }
+        }
+
+        // Başarım göster
+        function showAchievement(icon, title, description) {
+            const popup = document.getElementById('achievementPopup');
+            document.getElementById('achievementIcon').textContent = icon;
+            document.getElementById('achievementTitle').textContent = title;
+            document.getElementById('achievementDescription').textContent = description;
+            
+            popup.classList.add('show');
+            
+            setTimeout(() => {
+                popup.classList.remove('show');
+            }, 3000);
+        }
+
+        // Görevleri güncelle
+        function updateQuests() {
+            const questList = document.getElementById('questList');
+            questList.innerHTML = '';
+            
+            quests.forEach(quest => {
+                const isCompleted = gameState.completedQuests.includes(quest.id);
+                let progress = 0;
+                let current = 0;
+                
+                switch (quest.id) {
+                    case 'first_glass':
+                        current = Math.min(gameState.dailyGlasses, 1);
+                        progress = (current / 1) * 100;
+                        break;
+                    case 'morning_hydration':
+                        current = Math.min(gameState.dailyGlasses, 3);
+                        progress = (current / 3) * 100;
+                        break;
+                    case 'daily_goal':
+                        current = Math.min(gameState.dailyGlasses, gameState.dailyGoal);
+                        progress = (current / gameState.dailyGoal) * 100;
+                        break;
+                    case 'streak_3':
+                        current = Math.min(gameState.streakDays, 3);
+                        progress = (current / 3) * 100;
+                        break;
+                    case 'total_50':
+                        current = Math.min(gameState.totalGlasses, 50);
+                        progress = (current / 50) * 100;
+                        break;
+                }
+                
+                const questElement = document.createElement('div');
+                questElement.className = `quest-item ${isCompleted ? 'completed' : (progress > 0 ? 'active' : '')}`;
+                questElement.innerHTML = `
+                    <div class="quest-info">
+                        <div class="quest-name" style="font-weight: 700; margin-bottom: 5px; font-size: 16px;">${quest.icon} ${quest.name}</div>
+                        <div class="quest-description" style="font-size: 14px; opacity: 0.8;">${quest.description}</div>
+                    </div>
+                    <div class="quest-progress">
+                        <div class="quest-progress-bar" style="width: 80px; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow: hidden;">
+                            <div class="quest-progress-fill" style="width: ${progress}%; height: 100%; background: #4CAF50; transition: width 0.5s ease;"></div>
+                        </div>
+                        <div class="quest-reward" style="font-size: 12px; color: #FFD700; font-weight: 700; margin-top: 5px;">${isCompleted ? '✅' : `+${quest.reward} XP`}</div>
+                    </div>
+                `;
+                
+                questList.appendChild(questElement);
+            });
+        }
+
+        // Su parçacıkları oluştur
+        function createWaterParticles() {
+            const container = document.getElementById('waterParticles');
+            
+            for (let i = 0; i < 12; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 1 + 's';
+                
+                container.appendChild(particle);
+                
+                setTimeout(() => {
+                    if (container.contains(particle)) {
+                        container.removeChild(particle);
+                    }
+                }, 3000);
+            }
+            
+            // Su damlası sesi
+            setTimeout(() => playDropSound(), 200);
+        }
+
+        // Maskotu güncelle
+        function updateMascot() {
+            const mascot = document.getElementById('mascot');
+            const progress = (gameState.dailyGlasses / gameState.dailyGoal) * 100;
+            let state;
+            
+            if (progress === 0) {
+                state = mascotStates.desert;
+            } else if (progress < 25) {
+                state = mascotStates.thirsty;
+            } else if (progress < 50) {
+                state = mascotStates.normal;
+            } else if (progress < 75) {
+                state = mascotStates.happy;
+            } else {
+                state = mascotStates.excited;
+            }
+            
+            mascot.className = 'mascot ' + state.class;
+        }
+
+        // Maskot ile konuş
+        function talkToMascot() {
+            playDropSound();
+            
+            const progress = (gameState.dailyGlasses / gameState.dailyGoal) * 100;
+            let message;
+            
+            if (progress === 0) {
+                message = mascotStates.desert.message;
+            } else if (progress < 25) {
+                message = mascotStates.thirsty.message;
+            } else if (progress < 50) {
+                message = mascotStates.normal.message;
+            } else if (progress < 75) {
+                message = mascotStates.happy.message;
+            } else {
+                message = mascotStates.excited.message;
+            }
+            
+            showSpeechBubble(message);
+        }
+
+        // Konuşma balonu göster
+        function showSpeechBubble(message) {
+            const bubble = document.getElementById('speechBubble');
+            bubble.textContent = message;
+            bubble.classList.add('show');
+            
+            setTimeout(() => {
+                bubble.classList.remove('show');
+            }, 3000);
+        }
+
+        // Ekranı güncelle
+        function updateDisplay() {
+            document.getElementById('dailyGlasses').textContent = gameState.dailyGlasses;
+            document.getElementById('totalGlasses').textContent = gameState.totalGlasses;
+            document.getElementById('streakDays').textContent = gameState.streakDays;
+            
+            const progress = Math.min((gameState.dailyGlasses / gameState.dailyGoal) * 100, 100);
+            document.getElementById('hydrationLevel').textContent = Math.round(progress);
+            
+            const progressFill = document.getElementById('progressFill');
+            progressFill.style.width = progress + '%';
+            progressFill.textContent = `${gameState.dailyGlasses}/${gameState.dailyGoal}`;
+            
+            // Seviye sistemi
+            const levelInfo = getLevelName(gameState.playerLevel);
+            document.getElementById('levelName').textContent = levelInfo.name;
+            document.getElementById('playerLevel').textContent = gameState.playerLevel;
+            document.getElementById('currentXP').textContent = gameState.currentXP;
+            document.getElementById('maxXP').textContent = gameState.maxXP;
+            
+            const xpProgress = (gameState.currentXP / gameState.maxXP) * 100;
+            document.getElementById('xpFill').style.width = xpProgress + '%';
+            
+            // Buton durumunu güncelle
+            updateDrinkButton();
+        }
+
+        // Su içme butonunu güncelle
+        function updateDrinkButton() {
+            const drinkButton = document.getElementById('drinkButton');
+            if (gameState.dailyGlasses >= gameState.dailyGoal) {
+                drinkButton.textContent = '✅ Hedef Tamamlandı!';
+                drinkButton.style.opacity = '0.6';
+                drinkButton.style.cursor = 'not-allowed';
+            } else {
+                drinkButton.textContent = `💧 Su İçtim (${gameState.dailyGlasses}/${gameState.dailyGoal})`;
+                drinkButton.style.opacity = '1';
+                drinkButton.style.cursor = 'pointer';
+            }
+        }
+
+        // Hatırlatma ayarla
+        function setReminder() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(function(permission) {
+                    if (permission === 'granted') {
+                        showNotification("🔔 Hatırlatmalar aktif! 2 saatte bir hatırlatacağım.", "success");
+                        startReminders();
+                        addNotification('🔔', 'Hatırlatmalar Aktif', '2 saatte bir su içmeyi hatırlatacağım');
+                    } else {
+                        showNotification("⚠️ Bildirim izni gerekli!", "warning");
+                    }
+                });
+            } else {
+                showNotification("⚠️ Tarayıcınız bildirimleri desteklemiyor!", "warning");
+            }
+        }
+
+        // Hatırlatmaları başlat
+        function startReminders(frequency = 120) {
+            if (gameState.reminderInterval) {
+                clearInterval(gameState.reminderInterval);
+            }
+            
+            gameState.reminderInterval = setInterval(() => {
+                if (gameState.dailyGlasses < gameState.dailyGoal) {
+                    if ('Notification' in window && Notification.permission === 'granted') {
+                        new Notification('💧 AquaBuddy', {
+                            body: 'Su içme zamanı! Maskotun seni bekliyor!',
+                            icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">💧</text></svg>'
+                        });
+                    }
+                    showNotification("💧 Su içme zamanı! Maskotun seni bekliyor!", "warning");
+                    addNotification('💧', 'Su İçme Zamanı!', 'Maskotun seni bekliyor, su içmeyi unutma!');
+                }
+            }, frequency * 60000);
+        }
+
+        // Bildirim göster
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = 'notification ' + type + ' show';
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+        }
+
+        // Oyun durumunu kaydet
+        function saveGameState() {
+            localStorage.setItem('totalGlasses', gameState.totalGlasses);
+            localStorage.setItem('streakDays', gameState.streakDays);
+            localStorage.setItem('playerLevel', gameState.playerLevel);
+            localStorage.setItem('currentXP', gameState.currentXP);
+            localStorage.setItem('completedQuests', JSON.stringify(gameState.completedQuests));
+            localStorage.setItem('notifications', JSON.stringify(gameState.notifications));
+        }
+
+        // Ayarlar fonksiyonları
+        function setupSettings() {
+            // Ses efektleri toggle
+            const soundToggle = document.getElementById('soundEffectsToggle');
+            soundToggle.checked = soundEnabled;
+            soundToggle.addEventListener('change', function() {
+                soundEnabled = this.checked;
+                localStorage.setItem('soundEnabled', soundEnabled);
+            });
+
+            // Dil seçimi
+            const languageSelect = document.getElementById('languageSelect');
+            languageSelect.addEventListener('change', function() {
+                const selectedLanguage = this.value;
+                localStorage.setItem('selectedLanguage', selectedLanguage);
+                showNotification(`🌍 Dil değiştirildi: ${this.options[this.selectedIndex].text}`, 'success');
+                
+                // Gelecekte çoklu dil desteği için hazırlık
+                if (selectedLanguage !== 'tr') {
+                    showNotification('🚧 Diğer diller yakında eklenecek!', 'info');
+                }
+            });
+
+            // Hatırlatma sıklığı
+            const reminderSelect = document.getElementById('reminderFrequency');
+            reminderSelect.addEventListener('change', function() {
+                const frequency = parseInt(this.value);
+                localStorage.setItem('reminderFrequency', frequency);
+                
+                if (frequency > 0) {
+                    startReminders(frequency);
+                    showNotification(`🔔 Hatırlatmalar ${frequency} dakikada bir gelecek!`, 'success');
+                } else {
+                    if (gameState.reminderInterval) {
+                        clearInterval(gameState.reminderInterval);
+                    }
+                    showNotification('🔕 Hatırlatmalar kapatıldı!', 'info');
+                }
+            });
+
+            // Kayıtlı ayarları yükle
+            loadSettings();
+        }
+
+        // Kayıtlı ayarları yükle
+        function loadSettings() {
+            const savedSoundEnabled = localStorage.getItem('soundEnabled');
+            if (savedSoundEnabled !== null) {
+                soundEnabled = savedSoundEnabled === 'true';
+                document.getElementById('soundEffectsToggle').checked = soundEnabled;
+            }
+
+            const savedLanguage = localStorage.getItem('selectedLanguage');
+            if (savedLanguage) {
+                document.getElementById('languageSelect').value = savedLanguage;
+            }
+
+            const savedFrequency = localStorage.getItem('reminderFrequency');
+            if (savedFrequency) {
+                document.getElementById('reminderFrequency').value = savedFrequency;
+            }
+        }
+
+        // Kullanıcı etkileşimi sonrası ses bağlamını başlat
+        document.addEventListener('click', function() {
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+        }, { once: true });
+
+        // Profil fonksiyonları
+        function loadProfile() {
+            if (userData.name) {
+                document.getElementById('profileName').value = userData.name;
+                document.getElementById('profileAge').value = userData.age;
+                document.getElementById('profileHeight').value = userData.height;
+                document.getElementById('profileWeight').value = userData.weight;
+                document.getElementById('profileGender').value = userData.gender;
+                document.getElementById('profileActivity').value = userData.activity;
+                
+                // Avatar göster
+                const avatarContainer = document.getElementById('profileAvatarContainer');
+                if (userData.avatar) {
+                    avatarContainer.innerHTML = `<img src="${userData.avatar}" alt="Profil Fotoğrafı">`;
+                } else {
+                    avatarContainer.innerHTML = `<div class="default-avatar">👤</div>`;
+                }
+                
+                // Tüm alanları devre dışı bırak
+                disableAllFields();
+            }
+        }
+
+        function disableAllFields() {
+            document.getElementById('profileName').disabled = true;
+            document.getElementById('profileAge').disabled = true;
+            document.getElementById('profileHeight').disabled = true;
+            document.getElementById('profileWeight').disabled = true;
+            document.getElementById('profileGender').disabled = true;
+            document.getElementById('profileActivity').disabled = true;
+        }
+
+        function editField(fieldName) {
+            const fieldMap = {
+                'name': 'profileName',
+                'age': 'profileAge',
+                'height': 'profileHeight',
+                'weight': 'profileWeight',
+                'gender': 'profileGender',
+                'activity': 'profileActivity'
+            };
+            
+            const fieldId = fieldMap[fieldName];
+            const field = document.getElementById(fieldId);
+            
+            if (field.disabled) {
+                field.disabled = false;
+                field.focus();
+                showNotification(`${fieldName === 'name' ? 'İsim' : fieldName === 'age' ? 'Yaş' : fieldName === 'height' ? 'Boy' : fieldName === 'weight' ? 'Kilo' : fieldName === 'gender' ? 'Cinsiyet' : 'Aktivite'} alanı düzenleme için açıldı!`, 'info');
+            }
+        }
+
+        function changeAvatar() {
+            document.getElementById('newAvatar').click();
+        }
+
+        // Yeni avatar seçildiğinde
+        document.addEventListener('DOMContentLoaded', function() {
+            const newAvatarInput = document.getElementById('newAvatar');
+            if (newAvatarInput) {
+                newAvatarInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const avatarContainer = document.getElementById('profileAvatarContainer');
+                            avatarContainer.innerHTML = `<img src="${e.target.result}" alt="Profil Fotoğrafı">`;
+                            userData.avatar = e.target.result;
+                            showNotification("📸 Profil fotoğrafı güncellendi!", "success");
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        });
+
+        function saveProfile() {
+            // Verileri güncelle
+            userData.name = document.getElementById('profileName').value;
+            userData.age = parseInt(document.getElementById('profileAge').value);
+            userData.height = parseInt(document.getElementById('profileHeight').value);
+            userData.weight = parseInt(document.getElementById('profileWeight').value);
+            userData.gender = document.getElementById('profileGender').value;
+            userData.activity = document.getElementById('profileActivity').value;
+            
+            // Günlük hedefi yeniden hesapla
+            const oldGoal = gameState.dailyGoal;
+            gameState.dailyGoal = calculateDailyWaterNeed();
+            
+            // Verileri kaydet
+            localStorage.setItem('userData', JSON.stringify(userData));
+            
+            // Header'ı güncelle
+            document.getElementById('dailyGoal').textContent = `Günlük hedef: ${gameState.dailyGoal} bardak`;
+            
+            // Header avatar'ı güncelle
+            const headerAvatarContainer = document.getElementById('userAvatarContainer');
+            if (userData.avatar) {
+                headerAvatarContainer.innerHTML = `<img src="${userData.avatar}" class="user-avatar" alt="Profil Fotoğrafı">`;
+            }
+            
+            // Tüm alanları tekrar devre dışı bırak
+            disableAllFields();
+            
+            // Bildirim göster
+            if (oldGoal !== gameState.dailyGoal) {
+                showNotification(`💾 Profil kaydedildi! Yeni günlük hedef: ${gameState.dailyGoal} bardak`, "success");
+                addNotification('💾', 'Profil Güncellendi', `Yeni günlük hedef: ${gameState.dailyGoal} bardak`);
+            } else {
+                showNotification("💾 Profil başarıyla kaydedildi!", "success");
+                addNotification('💾', 'Profil Güncellendi', 'Profil bilgilerin başarıyla kaydedildi');
+            }
+            
+            // Ekranı güncelle
+            updateDisplay();
+            updateMascot();
+        }
+
+
+
+        // Service Worker kaydı (PWA için)
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('data:text/javascript,console.log("AquaBuddy PWA loaded")');
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'973435754794cdd4',t:'MTc1NTg4NDk4Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
