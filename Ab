@@ -3041,6 +3041,59 @@
                     return true;
                 } catch { return false; }
             }
+            // PWA Install button
+            (function(){
+                var deferredPrompt = null;
+                var btn = document.createElement('button');
+                btn.textContent = 'Uygulamayı İndir';
+                btn.style.position='fixed';
+                btn.style.right='16px';
+                btn.style.bottom='16px';
+                btn.style.zIndex='9999';
+                btn.style.padding='12px 16px';
+                btn.style.borderRadius='999px';
+                btn.style.border='none';
+                btn.style.color='#fff';
+                btn.style.background='linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                btn.style.boxShadow='0 8px 24px rgba(0,0,0,.2)';
+                btn.style.fontWeight='600';
+                btn.style.cursor='pointer';
+                btn.style.display='none';
+                document.body.appendChild(btn);
+
+                function showBtn(){ btn.style.display='inline-block'; }
+                function hideBtn(){ btn.style.display='none'; }
+
+                window.addEventListener('beforeinstallprompt', function(e){
+                    e.preventDefault();
+                    deferredPrompt = e;
+                    showBtn();
+                });
+
+                btn.addEventListener('click', async function(){
+                    // iOS fallback
+                    var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+                    var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+                    if (isIOS && isSafari) {
+                        alert('iOS için: Paylaş > Ana Ekrana Ekle yolunu kullanın.');
+                        return;
+                    }
+                    if (!deferredPrompt) { window.location.href = window.location.href; return; }
+                    deferredPrompt.prompt();
+                    try { await deferredPrompt.userChoice; } catch {}
+                    hideBtn();
+                    deferredPrompt = null;
+                });
+
+                // Heuristic: show CTA if installable hint never fires but is PWA-capable
+                setTimeout(function(){
+                    if (!deferredPrompt && window.matchMedia('(display-mode: browser)').matches) {
+                        // Only on Android/Chrome like envs
+                        var ua = navigator.userAgent.toLowerCase();
+                        if (ua.includes('android') && ua.includes('chrome')) showBtn();
+                    }
+                }, 2500);
+            })();
         })();
     </script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'973435754794cdd4',t:'MTc1NTg4NDk4Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
