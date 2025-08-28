@@ -3009,5 +3009,61 @@
             navigator.serviceWorker.register('data:text/javascript,console.log("AquaBuddy PWA loaded")');
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'973435754794cdd4',t:'MTc1NTg4NDk4Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+    <script>
+        // Service Worker registration and notification helpers
+        (function(){
+            const swUrl = 'sw.js';
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function(){
+                    navigator.serviceWorker.register(swUrl).catch(function(){});
+                });
+            }
+
+            async function ensureNotificationPermission(){
+                if (!('Notification' in window)) return false;
+                if (Notification.permission === 'granted') return true;
+                if (Notification.permission === 'denied') return false;
+                try {
+                    const perm = await Notification.requestPermission();
+                    return perm === 'granted';
+                } catch { return false; }
+            }
+
+            window.appNotify = async function(title, body){
+                const ok = await ensureNotificationPermission();
+                if (!ok) return false;
+                try {
+                    if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+                        navigator.serviceWorker.controller.postMessage({ type: 'LOCAL_NOTIFY', title, body });
+                        return true;
+                    }
+                    new Notification(title || 'Bildirim', { body: body || '' });
+                    return true;
+                } catch { return false; }
+            }
+        })();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'973435754794cdd4',t:'MTc1NTg4NDk4Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+<script>
+// Minimal SW for local notifications and offline shell
+(function(){
+  var blob = new Blob([
+`self.addEventListener('install', function(e){self.skipWaiting()});
+self.addEventListener('activate', function(e){self.clients.claim()});
+self.addEventListener('message', function(e){
+  var d=e.data||{}; if(d.type==='LOCAL_NOTIFY' && self.registration && self.registration.showNotification){
+    var title = (d.title||'Bildirim').toString().slice(0,120);
+    var body = (d.body||'').toString().slice(0,500);
+    self.registration.showNotification(title,{body:body});
+  }
+});
+`], { type: 'text/javascript' });
+  var swUrl = URL.createObjectURL(blob);
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistration().then(function(r){
+      if(!r){navigator.serviceWorker.register(swUrl)}
+    });
+  }
+})();
+</script></body>
 </html>

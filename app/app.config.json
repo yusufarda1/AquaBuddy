@@ -8,5 +8,10 @@
   "safeNavigationWhitelist": [
     "example.com",
     "*.example.com"
-  ]
+  ],
+  "notifications": {
+    "enabled": true,
+    "feedUrl": null,
+    "pollIntervalMs": 60000
+  }
 }
