@@ -1,0 +1,41 @@
+{
+  "name": "site-wrapper-app",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Desktop app wrapper for an existing website using Electron.",
+  "main": "src/main.js",
+  "type": "module",
+  "scripts": {
+    "start": "electron .",
+    "dev": "cross-env APP_TARGET_URL=${APP_TARGET_URL:-https://example.com} electron .",
+    "build": "electron-builder",
+    "pack": "electron-builder --dir"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "29.4.6",
+    "electron-builder": "24.13.3",
+    "cross-env": "7.0.3"
+  },
+  "author": "",
+  "license": "MIT",
+  "build": {
+    "appId": "com.example.sitewrapper",
+    "productName": "SiteWrapper",
+    "files": [
+      "src/**/*",
+      "app.config.json",
+      "package.json"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "category": "Utility"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+dist/
+out/
+build/
+node_modules/
+*.log
+*.map
+*.asar
+*.local
+.DS_Store
