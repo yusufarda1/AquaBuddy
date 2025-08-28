@@ -38,3 +38,9 @@ Güvenlik
 --------
 - `nodeIntegration: false`, `contextIsolation: true`, `sandbox: true` etkin.
 - Pencere açma ve gezinme, beyaz liste alan adları ile sınırlandırılır; harici linkler varsayılan tarayıcıda açılır.
+
+## Yayınlama (Landing Site)
+
+- `site/` klasörü statik olarak barındırılabilir (GitHub Pages, Vercel, Netlify).
+- Alan adı için `site/CNAME` dosyasını düzenleyin (örn. `app.aquabuddy.com`).
+- Yayın adresi: `https://app.aquabuddy.com/` (örnek). `Uygulamayı Aç` bağlantısı `/app/` yoluna yönlenir.
