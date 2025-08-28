@@ -1,0 +1,17 @@
+{
+  "title": "My Web App",
+  "targetUrl": "https://example.com",
+  "width": 1200,
+  "height": 800,
+  "backgroundColor": "#111111",
+  "userAgentSuffix": " SiteWrapper/0.1.0",
+  "safeNavigationWhitelist": [
+    "example.com",
+    "*.example.com"
+  ],
+  "notifications": {
+    "enabled": true,
+    "feedUrl": null,
+    "pollIntervalMs": 60000
+  }
+}
